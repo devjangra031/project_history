@@ -1,0 +1,64 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-4"><%= @project.name %></h1>
+  <p class="text-gray-700"><%= @project.description %></p>
+
+  <!-- Status Update Form -->
+  <div class="mt-6 bg-gray-100 p-4 rounded-lg">
+    <h2 class="text-lg font-semibold">Update Status</h2>
+    <form action="<%= project_path(@project) %>" method="post">
+      <%= hidden_field_tag :_method, "patch" %>
+      <%= csrf_meta_tags %>
+
+      <select name="project[status]" class="mt-2 p-2 border rounded-lg">
+        <% Project::VALID_STATUSES.each do |status| %>
+          <option value="<%= status %>" <%= "selected" if @project.status == status %>><%= status %></option>
+        <% end %>
+      </select>
+      <button type="submit" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Update</button>
+    </form>
+  </div>
+
+  <!-- Status Change History -->
+  <div class="mt-6">
+    <h2 class="text-xl font-semibold mb-3">Status Change History</h2>
+    <div class="space-y-4">
+      <% @status_changes.each do |change| %>
+        <div class="p-4 border rounded-lg shadow-sm bg-gray-50">
+          <p class="text-gray-800">
+            <strong><%= change.user.email %></strong> changed status from 
+            <span class="font-semibold"><%= change.eventable.previous_status %></span> to 
+            <span class="font-semibold"><%= change.eventable.current_status %></span>.
+          </p>
+          <p class="text-sm text-gray-500"><%= time_ago_in_words(change.created_at) %> ago</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="mt-6">
+    <h2 class="text-2xl font-semibold mb-3">Comments</h2>
+    <div class="space-y-4">
+      <% @project_comments.each do |comment| %>
+        <div class="p-4 border rounded-lg shadow-sm bg-gray-50">
+          <p class="text-gray-800"><%= comment.eventable.content %></p>
+          <p class="text-sm text-gray-500">By <strong><%= comment.user.email %></strong>, <%= time_ago_in_words(comment.created_at) %> ago</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Comment Form -->
+  <div class="mt-6">
+    <h3 class="text-lg font-semibold mb-2">Add a Comment</h3>
+    <form action="<%= project_comments_path(@project) %>" method="post">
+      <%= csrf_meta_tags %>
+      <textarea name="comment[content]" class="w-full p-2 border rounded-lg" placeholder="Write a comment..." required></textarea>
+      <button type="submit" class="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg">Submit</button>
+    </form>
+  </div>
+
+  <div class="mt-6">
+    <a href="<%= projects_path %>" class="text-blue-600 hover:underline">Back to Projects</a>
+  </div>
+</div>

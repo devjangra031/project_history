@@ -1,0 +1,22 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold text-center mb-6">Projects</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @projects.each do |project| %>
+      <a href="<%= project_path(project) %>" class="block bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition">
+        <h2 class="text-xl font-semibold"><%= project.name %></h2>
+        <p class="text-gray-600 mt-2"><%= project.description.truncate(100) %></p>
+        <span class="inline-block mt-4 px-3 py-1 rounded-full 
+          <%= project.status == 'Pending' ? 'bg-yellow-200 text-yellow-800' : 
+               project.status == 'In Progress' ? 'bg-blue-200 text-blue-800' : 
+               'bg-green-200 text-green-800' %>">
+          <%= project.status %>
+        </span>
+      </a>
+    <% end %>
+  </div>
+
+  <div class="mt-6">
+    <%= paginate @projects %>
+  </div>
+</div>
